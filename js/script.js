@@ -54,13 +54,14 @@ function loadData() {
 
 function createTimeline(classichit) {
     const containerWidth = document.getElementById("TimelineDiv").clientWidth;
+    const containerHeight = window.innerHeight;
 
     const vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "data": {"values": classichit}, 
         "mark": "bar",
         "width": 0.7 * containerWidth,
-        "height": 500,
+        "height": 0.7 * containerHeight,
         "encoding": {
             "x": {
                 "field": "Year",
@@ -85,12 +86,42 @@ function createTimeline(classichit) {
 
 
 function createWorldmap(geogenre) {
+    const containerWidth = document.getElementById("WorldmapDiv").clientWidth;
+    const containerHeight = window.innerHeight;
     
-};
+    d3.json("data/countries-50m.json").then(function(world) {; 
+        const countries = topojson.feature(world, world.objects.countries); 
+        console.log(countries);
+
+        const proj = d3.geoNaturalEarth1().fitExtent([[0, 100], [0.7*containerWidth, 0.7*containerHeight]], countries);
+        let geoPathGen = d3.geoPath().projection(proj);
+
+        let svgEl = d3.select("div#WorldmapDiv")
+            .append("svg")
+            .attr("width", containerWidth)
+            .attr("height", containerHeight)
+        
+        svgEl.append("path")
+            .datum({type: "Sphere"})
+            .attr("fill", "None")
+            .attr("stroke", "black")
+            .attr("d", geoPathGen);
+
+        svgEl.append("path")
+            .datum({type: "FeatureCollection", features: countries.features})
+            .attr("d", geoPathGen)
+            .attr("fill", "lightgrey")
+            .attr("stroke", "black");
+
+    }).catch(function(error) {
+        console.error("Error loading the GeoJSON file:", error);
+    });
+}
 
 
 function createCarac(classichit) {
-    const containerWidth = document.getElementById("CaracDiv").clientWidth;
+    const containerWidth = document.getElementById("TimelineDiv").clientWidth;
+    const containerHeight = document.getElementById("TimelineDiv").clientHeight;
 
     const vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -102,7 +133,7 @@ function createCarac(classichit) {
         "spec": {
             "mark": "line",
             width: 0.7 * containerWidth,
-            height: 500,
+            height: 0.7*containerHeight,
             "encoding": {
                 "x": {
                     "field": "Year",
