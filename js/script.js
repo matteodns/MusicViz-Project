@@ -1,15 +1,130 @@
 const ctx = {
-
+    caracs_list: [
+        "Danceability",
+        "Energy",
+        "Speechiness",
+        "Acousticness",
+        "Instrumentalness",
+        "Liveness",
+        "Valence"
+    ],
+    worldmap: null,
+    ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
 
 
 function createViz() {
     console.log("Using D3 v" + d3.version);
-    createTimeline();
-    createWorldmap();
-    createCharts();
-    createCarac();
-    loadClassicHit();
+    // createWorldmap();
+    loadData();
+}
+
+
+function loadData() {
+    Promise.all([
+        d3.csv("data/ClassicHit_raw.csv", d3.autoType),
+        d3.csv("data/GeoGenre_raw.csv", d3.autoType)
+    ]).then(function(data) { 
+
+        let [classichit, geogenre] = data; 
+
+        const parseYear = d3.timeParse("%Y");
+        classichit.forEach(d => {
+            d.Year = parseYear(d.Year);
+        });
+
+        classichit = classichit.filter((d) => d.Year >= parseYear("1950"));
+        classichit = classichit.filter((d) => d.Year < parseYear("2024"));
+        classichit = classichit.filter((d) => d.Genre !== "World");
+
+        // ctx.classichit = classichit;
+        // ctx.geogenre = geogenre;
+
+        console.log("Data loaded:", classichit, geogenre);
+
+        createTimeline(classichit);
+        createWorldmap(geogenre);
+        createCarac(classichit);
+
+    }).catch(function(error) {
+        console.error("Error loading the CSV file:", error);
+    });
+};
+
+
+function createTimeline(classichit) {
+    const containerWidth = document.getElementById("TimelineDiv").clientWidth;
+
+    const vlSpec = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {"values": classichit}, 
+        "mark": "bar",
+        "width": 0.7 * containerWidth,
+        "height": 500,
+        "encoding": {
+            "x": {
+                "field": "Year",
+                "type": "temporal",
+                "timeUnit": "year",
+                "title": "Year"
+            },
+            "y": {
+                "aggregate": "count",
+                "title": "Number of Songs",
+                "type": "quantitative"
+            },
+            "color": {
+                "field": "Genre",
+                "type": "nominal"
+            }
+        }
+    };
+    const vlOpts = {actions: false}; 
+    vegaEmbed("#TimelineDiv", vlSpec, vlOpts);
+}
+
+
+function createWorldmap(geogenre) {
+    
+};
+
+
+function createCarac(classichit) {
+    const containerWidth = document.getElementById("CaracDiv").clientWidth;
+
+    const vlSpec = {
+        "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "data": {"values": classichit},
+        // Faire une rolling mean sur 5 ans pour lisser la courbe ?
+        "repeat": {
+            "layer": ctx.caracs_list,
+        },
+        "spec": {
+            "mark": "line",
+            width: 0.7 * containerWidth,
+            height: 500,
+            "encoding": {
+                "x": {
+                    "field": "Year",
+                    "type": "ordinal",
+                    "timeUnit": "year",
+                    "title": "Year"
+                },
+                "y": {
+                    "aggregate": "mean",
+                    "field": {"repeat": "layer"},
+                    "type": "quantitative",
+                    "title": null
+                },
+                "color": {
+                    "datum": {"repeat": "layer"},
+                    "type": "nominal",
+                },
+            },
+        },
+    };
+    const vlOpts = {actions: false}; 
+    vegaEmbed("#CaracDiv", vlSpec, vlOpts);
 }
 
 

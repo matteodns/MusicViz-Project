@@ -8,7 +8,25 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
         <script type="text/javascript" src="js/d3.v7.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+        <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
+        <style>
+#header
+#Timeline
+#Worldmap
+#Duration
+#Carac {
+    width: 100%,
+}
+section > div {
+    width: 100%,
+}
+        </style>
     </head>
     <body onload="createViz()">
         <div id="main">
@@ -40,25 +58,25 @@
                 <!-- <div class="downButton" onclick="clic"></div> -->
             </section>
 
-            <!-- section Charts -->
-            <section id="Charts">
-                <!-- <div class="upButton" onclick=""></div> -->
-                <div id="ChartsTitle">
-                    <h1>Charts</h1>
-                </div>
-                <div id="ChartsDiv"></div>
-                <!-- <div class="downButton" onclick="clic"></div> -->
-            </section>
-
             <!-- section Carac -->
             <section id="Carac">
                 <!-- <div class="upButton" onclick=""></div> -->
                 <div id="CaracTitle">
-                    <h1></h1>
+                    <h1>Characteristics</h1>
                 </div>
-                <div id="TimelineDiv"></div>
+                <div id="CaracDiv"></div>
                 <!-- <div class="downButton" onclick="clic"></div> -->
             </section>
+
+            <!-- section supplémentaire ? -->
+            <!-- <section id="Duration"> -->
+                <!-- <div class="upButton" onclick=""></div> -->
+                <!-- <div id="DurationTitle"> -->
+                    <!-- <h1>Duration</h1> -->
+                <!-- </div> -->
+                <!-- <div id="DurationDiv"></div> -->
+                <!-- <div class="downButton" onclick="clic"></div> -->
+            <!-- </section> -->
 
         </div>
 
