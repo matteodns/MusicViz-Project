@@ -13,3 +13,5 @@ Two Kaggle datasets were used :
 ## Inspirations
 
 https://observablehq.com/@d3/world-choropleth/2
+
+https://github.com/topojson/world-atlas?tab=readme-ov-file
