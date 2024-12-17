@@ -17,23 +17,73 @@
         <script type="text/javascript" src="js/script.js"></script>
         <script src="https://unpkg.com/topojson@3"></script>
         <style>
-#header
-#Timeline
-#Worldmap
-#Duration
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+}
+
+#Timeline,
+#Worldmap,
 #Carac {
     width: 100%;
+    /* position: relative; */
+    padding-top: 40px;
+    margin-left: 10%;
+    margin-right: 10%;
+    min-height: 100vh; 
 }
-section > div {
+/* section > div {
     width: 100%;
+} */
+#header {
+    width: 100%;
+    height: 40px;
+    position: fixed;
+    z-index: 100; 
+    background-color: white;
+    padding-right: 10%;
+    padding-left: 10%;
 }
+
+#homeButton:hover {
+    cursor: pointer;
+}
+
         </style>
     </head>
     <body onload="createViz()">
         <div id="main">
 
             <!-- header: bouton de retour à la page d'accueil et lookup field-->
-            <header id="header"></header>
+            <header id="header">
+                <div id="homeButton" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Home</div> 
+                <select id="genreSelect" name="Choose a genre", onchange="changeGenre()">
+                    <option value="All">All</option>
+                    <option value="Alt. Rock">Alternative Rock</option>
+                    <option value="Blues">Blues</option>
+                    <option value="Country">Country</option>
+                    <option value="Disco">Disco</option>
+                    <option value="EDM">EDM</option>
+                    <option value="Folk">Folk</option>
+                    <option value="Funk">Funk</option>
+                    <option value="Gospel">Gospel</option>
+                    <option value="Jazz">Jazz</option>
+                    <option value="Metal">Metal</option>
+                    <option value="Pop">Pop</option>
+                    <option value="Punk">Punk</option>
+                    <option value="R&B">R&B</option>
+                    <option value="Rap">Rap</option>
+                    <option value="Reggae">Reggae</option>
+                    <option value="Rock">Rock</option>
+                    <option value="SKA">SKA</option>
+                    <option value="Today">Today</option>
+                </select>
+                </div>
+
+            </header>
 
             <!-- section de page d'accueil ? A FAIRE A LA FIN
             <section id="main"></section>
