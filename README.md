@@ -15,3 +15,7 @@ Two Kaggle datasets were used :
 https://observablehq.com/@d3/world-choropleth/2
 
 https://github.com/topojson/world-atlas?tab=readme-ov-file
+
+
+Spotify graphic chart:
+https://developer.spotify.com/documentation/design#using-our-colors

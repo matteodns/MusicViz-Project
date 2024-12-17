@@ -1,0 +1,63 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #121212;
+}
+
+h1 {
+    color: white;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 2em;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+
+#Timeline {
+    padding-top: 40px;
+}
+
+#Timeline,
+#Worldmap,
+#Carac {
+    min-height: 100vh;
+}
+
+#Timeline,
+#Worldmap,
+#Carac,
+#header {
+    width: 100%;
+    padding-right: 10%;
+    padding-left: 10%;
+    top: 0;
+}
+
+#header {
+    width: 100%;
+    height: 40px;
+    position: fixed;
+    z-index: 100; 
+    background-color: #1ED760;
+    ;
+}
+
+#homeButton:hover {
+    cursor: pointer;
+}
+
+.tick line{
+    stroke: white;
+}
+
+.domain {
+    stroke: white;
+}
+
+.tick text {
+    fill: white;
+    /* stroke: white; */
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: "11px";
+}

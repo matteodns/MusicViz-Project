@@ -8,8 +8,7 @@ const ctx = {
         "Liveness",
         "Valence"
     ],
-    worldmap: null,
-    ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    // ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
 
 
@@ -101,7 +100,7 @@ map_detailed2broadgenres = {
     'Reggae': 'Other',
     'Rock': 'Rock',
     'SKA': 'Other',
-    'Today': 'Other',
+    'Today': 'Pop',
 }
 
 
@@ -113,13 +112,13 @@ function createViz() {
 
 function loadData(genre) {
     files_to_load = ["data/ClassicHit_raw.csv"];
-    let AllGenres = true;
+    let broad_genre;
     if (genre === "All") {
-        geo2load = "data/GeoGenre_cleaned.csv";
-        AllGenres = true;
+        broad_genre = "All";
+        geo2load = "data/GeoGenre_raw.csv";
     } else {
-        geo2load = `data/Geo${map_detailed2broadgenres[genre]}.csv`;
-        AllGenres = false;
+        broad_genre = map_detailed2broadgenres[genre];
+        geo2load = `data/Geo${broad_genre}.csv`;
     }
     Promise.all([
         d3.csv("data/ClassicHit_raw.csv", d3.autoType),
@@ -133,6 +132,12 @@ function loadData(genre) {
             d.Year = parseYear(d.Year);
         });
 
+        // classichit = classichit.map(d => {
+        //     if (d.Genre === "Today") {
+        //     d.Genre = "Pop";
+        //     }
+        //     return d;
+        // });
         classichit = classichit.filter((d) => d.Year >= parseYear("1950"));
         classichit = classichit.filter((d) => d.Year < parseYear("2024"));
         classichit = classichit.filter((d) => d.Genre !== "World");
@@ -142,10 +147,11 @@ function loadData(genre) {
         }
 
         console.log("Data loaded:", classichit, geogenre);
+        console.log("Genre:", broad_genre);
 
         Promise.all([
             createTimeline(classichit),
-            createWorldmap(geogenre, !AllGenres),
+            createWorldmap(geogenre, broad_genre),
             createCarac(classichit),
         ]).then(() => {window.scrollTo({top: 0, behavior: 'smooth'});})
 
@@ -161,10 +167,8 @@ function loadData(genre) {
 
 
 function createTimeline(classichit) {
-    const containerWidth = document.getElementById("TimelineDiv").clientWidth;
+    const containerWidth = window.innerWidth;//document.getElementById("TimelineDiv").clientWidth;
     const containerHeight = window.innerHeight;
-
-    d3.select("#WorldmapDiv").selectAll("*").remove();
 
     const vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -184,10 +188,7 @@ function createTimeline(classichit) {
                 "title": "Number of Songs",
                 "type": "quantitative"
             },
-            // "color": {
-            //     "field": "Genre",
-            //     "type": "nominal"
-            // }
+
             "color": {
                 "aggregate": "count",
                 "title": "Number of Songs",
@@ -201,9 +202,11 @@ function createTimeline(classichit) {
 }
 
 
-function createWorldmap(geogenre, show) {
+function createWorldmap(geogenre, genre) {
     const containerWidth = document.getElementById("WorldmapDiv").clientWidth;
     const containerHeight = window.innerHeight;
+
+    d3.select("#WorldmapDiv").selectAll("*").remove();
 
     d3.json("data/countries-50m.json").then(function(world) {
 
@@ -234,7 +237,8 @@ function createWorldmap(geogenre, show) {
             .attr("stroke", "lightgrey");
 
 
-        if (show) {
+        if (genre !== "All") {
+            console.log("Creating worldmap for genre: ", genre);
             let genre_map = {};
             geogenre.forEach(d => {
                 genre_map[map_countries2iso[d.Country]] = d.popularity;
@@ -244,7 +248,7 @@ function createWorldmap(geogenre, show) {
             let color = d3.scaleSequential(domainExtent, d3.interpolateGreens).unknown("lightgrey"); 
 
             countriesG.attr("fill", d => color(genre_map[d.properties.name]));
-            createMapLegend(svgEl, containerWidth, color, domainExtent); //Genre
+            createMapLegend(svgEl, containerHeight, color, domainExtent, genre);
         }
 
     }).catch(function(error) {
@@ -253,7 +257,7 @@ function createWorldmap(geogenre, show) {
 }
 
 
-function createMapLegend(svgEl, containerWidth, color, domainExtent) {
+function createMapLegend(svgEl, containerHeight, color, domainExtent, genre) {
     
     let range4legend = d3.range(domainExtent[0], domainExtent[1], (domainExtent[1]-domainExtent[0])/100).reverse();
     let scale4legend = d3.scaleLinear()
@@ -261,7 +265,7 @@ function createMapLegend(svgEl, containerWidth, color, domainExtent) {
         .rangeRound([range4legend.length, 0]);
     let legendG = svgEl.append("g")
         .attr("id", "legendG")
-        .attr("transform", `translate(${0.75 * containerWidth}, 100)`);
+        .attr("transform", `translate(0, ${0.75 * containerHeight})`);
     legendG.selectAll("line")
         .data(range4legend)
         .enter()
@@ -274,50 +278,89 @@ function createMapLegend(svgEl, containerWidth, color, domainExtent) {
     legendG.append("g")
         .attr("transform", `translate(${20 + 4},0)`) //ctx.STRIP_H
         .call(d3.axisRight(scale4legend).ticks(5));
+        
     legendG.append("text")
-        .attr("x", 50)
+        .attr("x", 70)
         .attr("y", range4legend.length / 2)
-        .style("fill", "black")
+        .style("fill", "white")
         .attr("font-size", "11px")
-        .attr("font", "Helvetica Neue")
-        .text("Proportion de musiques \"Pop\" dans le Top 50");
+        .attr("font-family", "Helvetica Neue, sans-serif")
+        // .style("max-width", 0.1 * containerWidth + "px")
+        .text("Proportion of " + genre + " musics in 2022 Top 50"); 
 }
 
 function createCarac(classichit) {
-    const containerWidth = document.getElementById("TimelineDiv").clientWidth;
-    const containerHeight = document.getElementById("TimelineDiv").clientHeight;
+    const containerWidth = window.innerWidth; //document.getElementById("TimelineDiv").clientWidth;
+    const containerHeight = window.innerHeight; //document.getElementById("TimelineDiv").clientHeight;
 
-    const vlSpec = {
+    let vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "data": {"values": classichit},
-        // Faire une rolling mean sur 5 ans pour lisser la courbe ?
-        "repeat": {
-            "layer": ctx.caracs_list,
-        },
-        "spec": {
-            "mark": "line",
-            width: 0.7 * containerWidth,
-            height: 0.7*containerHeight,
-            "encoding": {
-                "x": {
-                    "field": "Year",
-                    "type": "ordinal",
-                    "timeUnit": "year",
-                    "title": "Year"
-                },
-                "y": {
-                    "aggregate": "mean",
-                    "field": {"repeat": "layer"},
-                    "type": "quantitative",
-                    "title": null
-                },
-                "color": {
-                    "datum": {"repeat": "layer"},
-                    "type": "nominal",
-                },
+        "transform": [
+            {"fold": ctx.caracs_list},
+            {"aggregate": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["Year", "key"]},
+        ],
+        "width": 0.7 * containerWidth,
+        "height": 0.7 * containerHeight,
+        "mark": "line",
+        "encoding": {
+            "x": {
+                "field": "Year",
+                "type": "ordinal",
+                "timeUnit": "year",
+                "title": "Year",
+                "axis": {
+                    "values": d3.range(1950, 2025, 10)
+                }
             },
+            "y": {
+                "field": "value",
+                "type": "quantitative",
+            },
+            "color": {
+                "condition": {
+                    "param": "hover",
+                    "field": "key",
+                    "type": "nominal",
+                    "legend": null
+                },
+                "value": "grey",
+            },
+            "opacity": {
+                "condition": {
+                    "param": "hover",
+                    "value": 1
+                },
+                "value": 0.2,
+            }
         },
+        "layer": [{
+            "params": [{
+                "name": "hover",
+                "select": {
+                    "type": "point",
+                    "fields": ["key"],
+                    "on": "pointerover",
+                }
+            }],
+            "mark": {"type": "line", "strokeWidth": 8, "stroke": "transparent"}
+        }, {
+            "mark": "line"
+        }, {
+            "encoding": {
+                "x": {"aggregate": "max", "field": "Year"},
+                "y": {"aggregate": {"argmax": "Year"}, "field": "value"},
+            },
+            "layer": [{
+                "mark": {"type": "circle"}
+            }, {
+                "mark": {"type": "text", "align": "left", "dx": 4},
+                "encoding": {"text": {"field":"key", "type": "nominal"}}
+            }]
+        }],
+        "config": {"view": {"stroke": null}}
     };
+
     const vlOpts = {actions: false};
     vegaEmbed("#CaracDiv", vlSpec, vlOpts);
 }
