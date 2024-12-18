@@ -9,15 +9,16 @@ html {
 body {
     margin: 0px;
     padding: 0px;
-    font-family: 'Helvetica Neue', sans-serif;
+    font-family: 'Poppins', 'Helvetica Neue', sans-serif;
+    font-weight: 400;
     background-color: #121212;
 }
 
 h1 {
     color: white;
-    font-family: 'Helvetica Neue', sans-serif;
+    /* font-family: 'Helvetica Neue', sans-serif; */
     font-size: 2em;
-    font-weight: bold;
+    font-weight: 700;
     margin: 0;
     padding: 0;
 }
@@ -60,6 +61,11 @@ svg {
     position: fixed;
     z-index: 100; 
     background-color: #1ED760;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px;
 }
 
 #homeButton:hover {
@@ -79,4 +85,61 @@ text {
     /* stroke: white; */
     font-family: "Helvetica Neue", sans-serif;
     font-size: "11px";
+}
+
+
+/*choose music*/
+.openChoose {
+    cursor: pointer;
+}
+#genreSelect {
+    position: fixed;
+    top: 40px;
+    bottom: 0;
+    right: 0;
+    background-color: rgba(50, 50, 50, 0.9);
+    padding: 40px 80px 40px 00px;
+    color: white;
+    transition-duration: 0.5s;
+    transform: translateX(100%);
+    z-index: 100;
+}
+#genreSelect ul {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+#genreSelect li {
+    list-style: none;
+    cursor: pointer;
+    transition: padding;
+    padding-left: 40px;
+}
+#genreSelect li:hover {
+    list-style: none;
+    cursor: pointer;
+    color: #1ed760;
+    border-left: 5px solid #1ed760;
+    padding-left: 35px;
+}
+#genreSelect .close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+}
+#genreSelect.open {
+    transform: translateX(0%);
+}
+
+#Menu ul {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+#Menu a {
+    text-decoration: none;
 }

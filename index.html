@@ -7,7 +7,7 @@
         <meta name="description" content="My Data-Vizualization project about music genres specificities">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link type="text/css" rel="stylesheet" href="css/stylesheet.css">
-        <script type="text/javascript" src="js/d3.v7.min.js"></script>
+        <script type="text/javascript" src="js/d3.v7.min.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
         <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
         <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
@@ -16,6 +16,9 @@
         <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
         <script type="text/javascript" src="js/script.js"></script>
         <script src="https://unpkg.com/topojson@3"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
     </head>
     
     <body onload="createViz()">
@@ -24,31 +27,53 @@
             <!-- header: bouton de retour à la page d'accueil et lookup field-->
             <header id="header">
                 <!-- HOME button -->
-                <div id="homeButton" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Home</div> 
+                <div id="Menu">
+                    <ul>
+                        <li><a href="#Home">Home</a></li>
+                        <li><a href="#Timeline">Timeline</a></li>
+                        <li><a href="#Worldmap">Worldmap</a></li>
+                        <li><a href="#Carac">Characteristics</a></li>
+                    </ul>
+                </div>
+                <div class="openChoose">Choose the musical genre</div>
                 <!-- GENRE select menu -->
-                <select id="genreSelect" name="Choose a genre", onchange="changeGenre()">
-                    <option value="All">All</option>
-                    <option value="Alt. Rock">Alternative Rock</option>
-                    <option value="Blues">Blues</option>
-                    <option value="Country">Country</option>
-                    <option value="Disco">Disco</option>
-                    <option value="EDM">EDM</option>
-                    <option value="Folk">Folk</option>
-                    <option value="Funk">Funk</option>
-                    <option value="Gospel">Gospel</option>
-                    <option value="Jazz">Jazz</option>
-                    <option value="Metal">Metal</option>
-                    <option value="Pop">Pop</option>
-                    <option value="Punk">Punk</option>
-                    <option value="R&B">R&B</option>
-                    <option value="Rap">Rap</option>
-                    <option value="Reggae">Reggae</option>
-                    <option value="Rock">Rock</option>
-                    <option value="SKA">SKA</option>
-                    <option value="Today">Today</option>
-                </select>
-
-            </header>
+              </header>
+              <div id="genreSelect">
+                <div class="close">&#10062</div>
+                <ul onclick="changeGenre()">
+                  <li data-value="All">All</li>
+                  <li data-value="Alt. Rock">Alternative Rock</li>
+                  <li data-value="Blues">Blues</li>
+                  <li data-value="Country">Country</li>
+                  <li data-value="Disco">Disco</li>
+                  <li data-value="EDM">EDM</li>
+                  <li data-value="Folk">Folk</li>
+                  <li data-value="Funk">Funk</li>
+                  <li data-value="Gospel">Gospel</li>
+                  <li data-value="Jazz">Jazz</li>
+                  <li data-value="Metal">Metal</li>
+                  <li data-value="Pop">Pop</li>
+                  <li data-value="Punk">Punk</li>
+                  <li data-value="R&B">R&B</li>
+                  <li data-value="Rap">Rap</li>
+                  <li data-value="Reggae">Reggae</li>
+                  <li data-value="Rock">Rock</li>
+                  <li data-value="SKA">SKA</li>
+                  <li data-value="Today">Today</li>
+                </ul>
+              </div>
+            <!-- <script>
+                function changeGenre() {
+                    const genreItems = document.querySelectorAll('#genreSelect li');
+                    genreItems.forEach(item => {
+                        item.addEventListener('click', (event) => {
+                            const selectedGenre = event.target.getAttribute('data-value');
+                            console.log('Selected genre:', selectedGenre);
+                            // You can add more code here to handle the selected genre
+                        });
+                    });
+                }
+            </script> -->
 
             <!-- section de page d'accueil ? A FAIRE A LA FIN
             <section id="main"></section> -->
@@ -70,7 +95,7 @@
                     <h1>Worldmap</h1>
                 </div>
                 <div id="WorldmapDiv"></div>
-                <a href="#Worldmap">SECTION SUIVANTE</a>
+                <a href="#Carac">SECTION SUIVANTE</a>
             </section>
 
             <!-- section Carac -->
@@ -80,7 +105,6 @@
                     <h1>Characteristics</h1>
                 </div>
                 <div id="CaracDiv"></div>
-                <a href="#Worldmap">SECTION SUIVANTE</a>
             </section>
 
             <!-- section supplémentaire ? -->
@@ -95,7 +119,58 @@
 
         </div>
 
-        
+        <script>
+            const sections = document.querySelectorAll("section");
+            let currentSection = 0;
+            let isScrolling = false;
+
+            window.addEventListener("wheel", function (e) {
+                if (isScrolling) return;
+
+                if (e.deltaY > 0) {
+                // Scrolling down
+                if (currentSection < sections.length - 1) {
+                    currentSection++;
+                }
+                } else {
+                // Scrolling up
+                if (currentSection > 0) {
+                    currentSection--;
+                }
+                }
+
+                isScrolling = true;
+                sections[currentSection].scrollIntoView({ behavior: "smooth" });
+
+                setTimeout(() => {
+                isScrolling = false;
+                }, 500); // Adjust timeout based on scroll duration
+            });
+
+        </script>
+        <script>
+            const openChoose = document.querySelector('.openChoose');
+            const genreSelect = document.getElementById('genreSelect');
+            const closeBtn = document.querySelector('.close');
+            const genreItems = genreSelect.querySelectorAll('li');
+
+            // Open the dropdown by adding the 'open' class
+            openChoose.addEventListener('click', () => {
+            genreSelect.classList.add('open');
+            });
+
+            // Close the dropdown when clicking "close"
+            closeBtn.addEventListener('click', () => {
+            genreSelect.classList.remove('open');
+            });
+
+            // // Close the dropdown when clicking any list item
+            // genreItems.forEach(item => {
+            // item.addEventListener('click', () => {
+            //     genreSelect.classList.remove('open');
+            // });
+            // });
+        </script>
 
     </body>
 </html>

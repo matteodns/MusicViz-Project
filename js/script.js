@@ -405,15 +405,28 @@ function createCarac(classichit) {
 }
 
 
-
-
-// function pour ramener en haut de la page sur changement de genre dans le select:
-// de manière smooth
-
 function changeGenre() {
-    let genre = document.getElementById("genreSelect").value;
-    loadData(genre);
+
+    const genreItems = document.querySelectorAll('#genreSelect li');
+    genreItems.forEach(item => {
+        item.addEventListener('click', (event) => {
+
+            const genreSelect = document.getElementById('genreSelect');
+            genreSelect.classList.remove('open');
+
+            const selectedGenre = event.target.getAttribute('data-value');
+            console.log('Selected genre:', selectedGenre);
+            loadData(selectedGenre);
+        });
+    });
+    // let genre = document.getElementById("genreSelect").value; 
+    // let genreSelect = document.getElementById("genreSelect");
+    // let selectedGenre = genreSelect.getAttribute("data-value");
+    // console.log(selectedGenre);
+    
 }
+
+
 
 
 
