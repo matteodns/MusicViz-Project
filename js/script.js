@@ -8,6 +8,9 @@ const ctx = {
         "Liveness",
         "Valence"
     ],
+    STRIP_H: 20,
+    WINDOWIDTH: window.innerWidth,
+    WINDOWHEIGHT: window.innerHeight,
     // ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
 
@@ -153,7 +156,7 @@ function loadData(genre) {
             createTimeline(classichit),
             createWorldmap(geogenre, broad_genre),
             createCarac(classichit),
-        ]).then(() => {window.scrollTo({top: 0, behavior: 'smooth'});})
+        ]).then(() => {window.scrollTo({top: 0, left: 0, behavior: 'smooth'});})
 
         // setTimeout(() => {
         //     window.scrollTo({top: 0, behavior: 'smooth'});
@@ -167,15 +170,13 @@ function loadData(genre) {
 
 
 function createTimeline(classichit) {
-    const containerWidth = window.innerWidth;//document.getElementById("TimelineDiv").clientWidth;
-    const containerHeight = window.innerHeight;
 
     const vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
         "data": {"values": classichit},
         "mark": "bar",
-        "width": 0.7 * containerWidth,
-        "height": 0.7 * containerHeight,
+        "width": 0.7 * ctx.WINDOWIDTH,
+        "height": 0.7 * ctx.WINDOWHEIGHT,
         "encoding": {
             "x": {
                 "field": "Year",
@@ -203,8 +204,6 @@ function createTimeline(classichit) {
 
 
 function createWorldmap(geogenre, genre) {
-    const containerWidth = document.getElementById("WorldmapDiv").clientWidth;
-    const containerHeight = window.innerHeight;
 
     d3.select("#WorldmapDiv").selectAll("*").remove();
 
@@ -212,13 +211,13 @@ function createWorldmap(geogenre, genre) {
 
         const countries = topojson.feature(world, world.objects.countries);
 
-        const proj = d3.geoNaturalEarth1().fitExtent([[50, 50], [0.7*containerWidth, 0.7*containerHeight]], countries);
+        const proj = d3.geoNaturalEarth1().fitExtent([[50, 50], [0.7*ctx.WINDOWIDTH, 0.7*ctx.WINDOWHEIGHT]], countries);
         let geoPathGen = d3.geoPath().projection(proj);
 
         let svgEl = d3.select("div#WorldmapDiv")
             .append("svg")
-            .attr("width", containerWidth)
-            .attr("height", containerHeight);
+            .attr("width", ctx.WINDOWIDTH)
+            .attr("height", ctx.WINDOWHEIGHT);
 
         svgEl.append("path") // Sphere path
             .datum({type: "Sphere"})
@@ -233,7 +232,6 @@ function createWorldmap(geogenre, genre) {
             .join("path")
             .attr("d", geoPathGen)
             .attr("fill", "lightgrey")
-            // .attr("fill", d => color(genre_map[d.properties.name]))
             .attr("stroke", "lightgrey");
 
 
@@ -248,7 +246,7 @@ function createWorldmap(geogenre, genre) {
             let color = d3.scaleSequential(domainExtent, d3.interpolateGreens).unknown("lightgrey"); 
 
             countriesG.attr("fill", d => color(genre_map[d.properties.name]));
-            createMapLegend(svgEl, containerHeight, color, domainExtent, genre);
+            createMapLegend(svgEl, color, domainExtent, genre);
         }
 
     }).catch(function(error) {
@@ -256,8 +254,32 @@ function createWorldmap(geogenre, genre) {
     });
 }
 
+function wrap(text, width) {
+    text.each(function() {
+        var text = d3.select(this),
+            words = text.text().split(/\s+/).reverse(),
+            word,
+            line = [],
+            lineNumber = 0,
+            lineHeight = 1.1, // ems
+            y = text.attr("y"),
+            dy = parseFloat(text.attr("dy")) || 0,
+            tspan = text.text(null).append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", dy + "em");
+        while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+                line.pop();
+                tspan.text(line.join(" "));
+                line = [word];
+                tspan = text.append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+            }
+        }
+    });
+}
 
-function createMapLegend(svgEl, containerHeight, color, domainExtent, genre) {
+// Utilisation de la fonction wrap dans createMapLegend
+function createMapLegend(svgEl, color, domainExtent, genre) {
     
     let range4legend = d3.range(domainExtent[0], domainExtent[1], (domainExtent[1]-domainExtent[0])/100).reverse();
     let scale4legend = d3.scaleLinear()
@@ -265,18 +287,18 @@ function createMapLegend(svgEl, containerHeight, color, domainExtent, genre) {
         .rangeRound([range4legend.length, 0]);
     let legendG = svgEl.append("g")
         .attr("id", "legendG")
-        .attr("transform", `translate(0, ${0.75 * containerHeight})`);
+        .attr("transform", `translate(${0.7 * ctx.WINDOWIDTH}, 50)`);
     legendG.selectAll("line")
         .data(range4legend)
         .enter()
         .append("line")
         .attr("x1", 0)
         .attr("y1", (d, j) => (j))
-        .attr("x2", 20) //ctx.STRIP_H = 20
+        .attr("x2", ctx.STRIP_H)
         .attr("y2", (d, j) => (j))
         .attr("stroke", (d) => (color(d)));
     legendG.append("g")
-        .attr("transform", `translate(${20 + 4},0)`) //ctx.STRIP_H
+        .attr("transform", `translate(${ctx.STRIP_H + 4},0)`)
         .call(d3.axisRight(scale4legend).ticks(5));
         
     legendG.append("text")
@@ -285,13 +307,11 @@ function createMapLegend(svgEl, containerHeight, color, domainExtent, genre) {
         .style("fill", "white")
         .attr("font-size", "11px")
         .attr("font-family", "Helvetica Neue, sans-serif")
-        // .style("max-width", 0.1 * containerWidth + "px")
-        .text("Proportion of " + genre + " musics in 2022 Top 50"); 
+        .text("Proportion of " + genre + " songs in 2022 Top 50")
+        .call(wrap, 150); // Limite la largeur du texte à 200 pixels
 }
 
 function createCarac(classichit) {
-    const containerWidth = window.innerWidth; //document.getElementById("TimelineDiv").clientWidth;
-    const containerHeight = window.innerHeight; //document.getElementById("TimelineDiv").clientHeight;
 
     let vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
@@ -300,8 +320,8 @@ function createCarac(classichit) {
             {"fold": ctx.caracs_list},
             {"aggregate": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["Year", "key"]},
         ],
-        "width": 0.7 * containerWidth,
-        "height": 0.7 * containerHeight,
+        "width": 0.7 * ctx.WINDOWIDTH,
+        "height": 0.7 * ctx.WINDOWHEIGHT,
         "mark": "line",
         "encoding": {
             "x": {
