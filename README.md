@@ -19,3 +19,5 @@ https://github.com/topojson/world-atlas?tab=readme-ov-file
 
 Spotify graphic chart:
 https://developer.spotify.com/documentation/design#using-our-colors
+
+https://nathalie-denis.com/

@@ -9,8 +9,8 @@ const ctx = {
         "Valence"
     ],
     STRIP_H: 20,
-    WINDOWIDTH: window.innerWidth,
-    WINDOWHEIGHT: window.innerHeight,
+    WINDOWIDTH: window.innerWidth-20,
+    WINDOWHEIGHT: window.innerHeight-50,
     // ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
 
@@ -211,17 +211,36 @@ function createWorldmap(geogenre, genre) {
 
         const countries = topojson.feature(world, world.objects.countries);
 
-        const proj = d3.geoNaturalEarth1().fitExtent([[50, 50], [0.7*ctx.WINDOWIDTH, 0.7*ctx.WINDOWHEIGHT]], countries);
+        // const proj = d3.geoNaturalEarth1().fitExtent([[5, 5], [0.65*ctx.WINDOWIDTH-10, (0.65*ctx.WINDOWHEIGHT-10)*2/3]], countries);
+        
+        const width = 928; //0.65*ctx.WINDOWIDTH;
+        const height = width / 2;
+
+        const proj = d3.geoNaturalEarth1().fitExtent([[2, 2], [width - 2, height]], {type: "Sphere"})
+
         let geoPathGen = d3.geoPath().projection(proj);
 
-        let svgEl = d3.select("div#WorldmapDiv")
-            .append("svg")
-            .attr("width", ctx.WINDOWIDTH)
-            .attr("height", ctx.WINDOWHEIGHT);
+        let mapText = d3.select("div#WorldmapDiv")
+            .append("g")
+            .style("min-height", "11px")
+
+        let svgG = d3.select("div#WorldmapDiv")
+            .append("g")
+            .attr("id", "WorldmapSVG");
+
+        let svgEl = svgG.append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", [0, 0, width, height])
+            .attr("style", "max-width: 100%; height: auto;");
+
+        let legendG = svgG.append("svg")
+            .attr("width", 0.25*ctx.WINDOWIDTH)
+            // .attr("height", 0.7*ctx.WINDOWHEIGHT);
 
         svgEl.append("path") // Sphere path
             .datum({type: "Sphere"})
-            .attr("fill", d3.color("white"))
+            .attr("fill", d3.color("#222222"))
             .attr("stroke", "lightgrey")
             .attr("d", geoPathGen);
 
@@ -231,7 +250,7 @@ function createWorldmap(geogenre, genre) {
             .data(countries.features)
             .join("path")
             .attr("d", geoPathGen)
-            .attr("fill", "lightgrey")
+            .attr("fill", d3.color("#D7D7D7"))
             .attr("stroke", "lightgrey");
 
 
@@ -243,10 +262,10 @@ function createWorldmap(geogenre, genre) {
             });
 
             let domainExtent = d3.extent(geogenre, (d) => d.popularity)
-            let color = d3.scaleSequential(domainExtent, d3.interpolateGreens).unknown("lightgrey"); 
+            let color = d3.scaleSequential(domainExtent, d3.interpolateGreens).unknown(d3.color("#D7D7D7")); 
 
             countriesG.attr("fill", d => color(genre_map[d.properties.name]));
-            createMapLegend(svgEl, color, domainExtent, genre);
+            createMapLegend(legendG, mapText, color, domainExtent, genre);
         }
 
     }).catch(function(error) {
@@ -279,36 +298,36 @@ function wrap(text, width) {
 }
 
 // Utilisation de la fonction wrap dans createMapLegend
-function createMapLegend(svgEl, color, domainExtent, genre) {
+function createMapLegend(legendG, mapText, color, domainExtent, genre) {
     
     let range4legend = d3.range(domainExtent[0], domainExtent[1], (domainExtent[1]-domainExtent[0])/100).reverse();
     let scale4legend = d3.scaleLinear()
         .domain(domainExtent)
         .rangeRound([range4legend.length, 0]);
-    let legendG = svgEl.append("g")
-        .attr("id", "legendG")
-        .attr("transform", `translate(${0.7 * ctx.WINDOWIDTH}, 50)`);
+    // let legendG = svgEl.append("g")
+    //     .attr("id", "legendG")
+    //     .attr("transform", `translate(${0.7 * ctx.WINDOWIDTH}, 50)`);
     legendG.selectAll("line")
         .data(range4legend)
         .enter()
         .append("line")
         .attr("x1", 0)
-        .attr("y1", (d, j) => (j))
+        .attr("y1", (d, j) => (j+4))
         .attr("x2", ctx.STRIP_H)
-        .attr("y2", (d, j) => (j))
+        .attr("y2", (d, j) => (j+4))
         .attr("stroke", (d) => (color(d)));
     legendG.append("g")
-        .attr("transform", `translate(${ctx.STRIP_H + 4},0)`)
+        .attr("transform", `translate(${ctx.STRIP_H + 4}, 4)`)
         .call(d3.axisRight(scale4legend).ticks(5));
         
-    legendG.append("text")
+    mapText.append("text")
         .attr("x", 70)
         .attr("y", range4legend.length / 2)
         .style("fill", "white")
         .attr("font-size", "11px")
         .attr("font-family", "Helvetica Neue, sans-serif")
         .text("Proportion of " + genre + " songs in 2022 Top 50")
-        .call(wrap, 150); // Limite la largeur du texte à 200 pixels
+        // .call(wrap, 150); // Limite la largeur du texte à 200 pixels
 }
 
 function createCarac(classichit) {
