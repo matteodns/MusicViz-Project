@@ -250,7 +250,7 @@ function createWorldmap(geogenre, genre) {
 
         svgEl.append("path") // Sphere path
             .datum({type: "Sphere"})
-            .attr("fill", d3.color("#222222"))
+            .attr("fill", d3.color("#121212"))
             .attr("stroke", "lightgrey")
             .attr("d", geoPathGen);
 
@@ -337,6 +337,7 @@ function createCarac(classichit) {
         "transform": [
             {"fold": ctx.caracs_list},
             {"aggregate": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["Year", "key"]},
+            {"window": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["key"], "frame": [-10, +5]},
         ],
         "width": 0.7 * ctx.WINDOWIDTH,
         "height": 0.7 * ctx.WINDOWHEIGHT,
@@ -420,7 +421,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentSection = 0;
     let isScrolling = false;
 
-    scrollTo({top:0, left: 0, behavior: 'smooth'});
+    // scrollTo({top:0, left: 0, behavior: 'smooth'});
+    sections[0].scrollIntoView({ behavior: "smooth" });
 
     // Fast scroll between sections
     window.addEventListener("wheel", function (e) {
@@ -459,7 +461,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Close the dropdown when clicking any list item
     genreItems.forEach(item => {
     item.addEventListener('click', () => {
-        scrollTo({top:0, left: 0, behavior: 'smooth'});
+        // scrollTo({top:0, left: 0, behavior: 'smooth'});
+        sections[0].scrollIntoView({ behavior: "smooth" });
         genreSelect.classList.remove('open');
         const selectedGenre = event.target.getAttribute('data-value');
         console.log('Selected genre:', selectedGenre);

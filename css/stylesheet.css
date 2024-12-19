@@ -24,6 +24,7 @@ h1 {
     padding: 0;
 }
 
+#Home,
 #Timeline,
 #Worldmap,
 #Carac {
@@ -34,6 +35,7 @@ h1 {
     flex-direction: column;
 }
 
+#Home,
 #Carac {
     background-color: #222222;
 }
@@ -79,11 +81,23 @@ svg {
 #Menu ul {
     margin: 0;
     height: 40px;
+    padding-left: 60px;
 }
 
 #Menu li {
     padding-top: 10px;
     color: #DDDDDD;
+}
+
+#Menu li#homeButton{
+    padding-top: 0px;
+    color: #DDDDDD;
+}
+
+#icon {
+    top: 0px;
+    width: 40px;
+    height: 40px;
 }
 
 #Menu li:hover {
@@ -100,10 +114,6 @@ svg {
 
 #Menu li:hover a {
     color: #121212;
-}
-
-#homeButton:hover {
-    cursor: pointer;
 }
 
 .tick line{
