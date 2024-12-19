@@ -69,8 +69,37 @@ svg {
     padding: 0px 20px;
 }
 
+/*Header menu*/
+#Menu {
+    top: 0;
+    height: 40px;
+    padding: 0px 0px 10px 0px;
+}
+
+#Menu ul {
+    margin: 0;
+    height: 40px;
+}
+
+#Menu li {
+    padding-top: 10px;
+    color: #DDDDDD;
+}
+
+#Menu li:hover {
+    list-style: none;
+    cursor: pointer;
+    color: #121212; 
+    border-bottom: 2px solid #121212;
+    padding-bottom: 8px;
+}
+
 #Menu a {
     color: #DDDDDD;
+}
+
+#Menu li:hover a {
+    color: #121212;
 }
 
 #homeButton:hover {
@@ -86,7 +115,7 @@ svg {
 }
 
 
-/*choose music*/
+/*Genre select*/
 .openChoose {
     cursor: pointer;
 }

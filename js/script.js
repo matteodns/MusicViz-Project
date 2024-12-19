@@ -166,7 +166,10 @@ function createTimeline(classichit) {
         "background": "#121212",
         "stroke": "#DDDDDD",
         "data": {"values": classichit},
-        "mark": "bar",
+        "mark": {
+            "type": "bar",
+            "tooltip": true,
+        },
         "width": 0.7 * ctx.WINDOWIDTH,
         "height": 0.7 * ctx.WINDOWHEIGHT,
         "encoding": {
@@ -175,6 +178,9 @@ function createTimeline(classichit) {
                 "type": "temporal",
                 "timeUnit": "year",
                 "title": "Year",
+                "axis": {
+                    "values": d3.range(1950, 2025, 10)
+                }
             },
             "y": {
                 "aggregate": "count",
@@ -188,8 +194,9 @@ function createTimeline(classichit) {
             "color": {
                 "aggregate": "mean",
                 "field": "Popularity",
-                "title": "Popularity (ie nb of listeners)",
+                "title": "Measure of popularity (in %)",
                 "type": "quantitative",
+                "format": ".1f",
                 "scale": {"scheme": "greens"},
                 "legend": {
                     "labelColor": "#DDDDDD",
@@ -251,10 +258,14 @@ function createWorldmap(geogenre, genre) {
             .attr("id", "countriesG")
             .selectAll("path")
             .data(countries.features)
-            .join("path")
+            .enter()
+            .append("path")
             .attr("d", geoPathGen)
             .attr("fill", d3.color("#D7D7D7"))
-            .attr("stroke", "lightgrey");
+            .attr("stroke", "lightgrey")
+            
+        let countriesTitle = countriesG.append("title")
+            .text(d => d.properties.name);
 
 
         if (genre !== "All") {
@@ -268,6 +279,10 @@ function createWorldmap(geogenre, genre) {
             let color = d3.scaleSequential(domainExtent, d3.interpolateGreens).unknown(d3.color("#D7D7D7")); 
 
             countriesG.attr("fill", d => color(genre_map[d.properties.name]));
+            countriesTitle.text(d => {
+                let value = genre_map[d.properties.name];
+                return value !== undefined ? `${d.properties.name}: ${(100*value).toFixed()}%` : d.properties.name;
+            });              
             createMapLegend(legendG, mapText, color, domainExtent, genre);
         }
 
