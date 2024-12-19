@@ -11,6 +11,8 @@ const ctx = {
     STRIP_H: 20,
     WINDOWIDTH: window.innerWidth-20,
     WINDOWHEIGHT: window.innerHeight-50,
+
+    currentGenre: "All",
     // ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
 
@@ -135,12 +137,6 @@ function loadData(genre) {
             d.Year = parseYear(d.Year);
         });
 
-        // classichit = classichit.map(d => {
-        //     if (d.Genre === "Today") {
-        //     d.Genre = "Pop";
-        //     }
-        //     return d;
-        // });
         classichit = classichit.filter((d) => d.Year >= parseYear("1950"));
         classichit = classichit.filter((d) => d.Year < parseYear("2024"));
         classichit = classichit.filter((d) => d.Genre !== "World");
@@ -152,15 +148,9 @@ function loadData(genre) {
         console.log("Data loaded:", classichit, geogenre);
         console.log("Genre:", broad_genre);
 
-        Promise.all([
-            createTimeline(classichit),
-            createWorldmap(geogenre, broad_genre),
-            createCarac(classichit),
-        ]).then(() => {window.scrollTo({top: 0, left: 0, behavior: 'smooth'});})
-
-        // setTimeout(() => {
-        //     window.scrollTo({top: 0, behavior: 'smooth'});
-        // }, 1000);
+        createTimeline(classichit);
+        createWorldmap(geogenre, broad_genre);
+        createCarac(classichit);
 
     }).catch(function(error) {
         console.error("Error loading the CSV file:", error);
@@ -173,6 +163,8 @@ function createTimeline(classichit) {
 
     const vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "background": "#121212",
+        "stroke": "#DDDDDD",
         "data": {"values": classichit},
         "mark": "bar",
         "width": 0.7 * ctx.WINDOWIDTH,
@@ -182,20 +174,32 @@ function createTimeline(classichit) {
                 "field": "Year",
                 "type": "temporal",
                 "timeUnit": "year",
-                "title": "Year"
+                "title": "Year",
             },
             "y": {
                 "aggregate": "count",
                 "title": "Number of Songs",
-                "type": "quantitative"
+                "type": "quantitative",
+                "legend": {
+                    "labelColor": "#DDDDDD",
+                }
             },
 
             "color": {
-                "aggregate": "count",
-                "title": "Number of Songs",
+                "aggregate": "mean",
+                "field": "Popularity",
+                "title": "Popularity (ie nb of listeners)",
                 "type": "quantitative",
-                "scale": {"scheme": "greens"}
+                "scale": {"scheme": "greens"},
+                "legend": {
+                    "labelColor": "#DDDDDD",
+                    "titleColor": "#DDDDDD",
+                }
             },
+        },
+        "config": {
+            "axisX": {"labelColor": "#DDDDDD", "titleColor": "#DDDDDD"},
+            "axisY": {"labelColor": "#DDDDDD", "titleColor": "#DDDDDD"},
         }
     };
     const vlOpts = {actions: false};
@@ -222,7 +226,6 @@ function createWorldmap(geogenre, genre) {
 
         let mapText = d3.select("div#WorldmapDiv")
             .append("g")
-            .style("min-height", "11px")
 
         let svgG = d3.select("div#WorldmapDiv")
             .append("g")
@@ -273,29 +276,6 @@ function createWorldmap(geogenre, genre) {
     });
 }
 
-function wrap(text, width) {
-    text.each(function() {
-        var text = d3.select(this),
-            words = text.text().split(/\s+/).reverse(),
-            word,
-            line = [],
-            lineNumber = 0,
-            lineHeight = 1.1, // ems
-            y = text.attr("y"),
-            dy = parseFloat(text.attr("dy")) || 0,
-            tspan = text.text(null).append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", dy + "em");
-        while (word = words.pop()) {
-            line.push(word);
-            tspan.text(line.join(" "));
-            if (tspan.node().getComputedTextLength() > width) {
-                line.pop();
-                tspan.text(line.join(" "));
-                line = [word];
-                tspan = text.append("tspan").attr("x", text.attr("x")).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-            }
-        }
-    });
-}
 
 // Utilisation de la fonction wrap dans createMapLegend
 function createMapLegend(legendG, mapText, color, domainExtent, genre) {
@@ -304,9 +284,6 @@ function createMapLegend(legendG, mapText, color, domainExtent, genre) {
     let scale4legend = d3.scaleLinear()
         .domain(domainExtent)
         .rangeRound([range4legend.length, 0]);
-    // let legendG = svgEl.append("g")
-    //     .attr("id", "legendG")
-    //     .attr("transform", `translate(${0.7 * ctx.WINDOWIDTH}, 50)`);
     legendG.selectAll("line")
         .data(range4legend)
         .enter()
@@ -318,22 +295,29 @@ function createMapLegend(legendG, mapText, color, domainExtent, genre) {
         .attr("stroke", (d) => (color(d)));
     legendG.append("g")
         .attr("transform", `translate(${ctx.STRIP_H + 4}, 4)`)
+        .style("stroke", "#DDDDDD")
+        .style("color", "#DDDDDD")
+        .style("font-size", "11px")
+        .style("font-family", "Poppins")
+        .style("font-weight", "400")
         .call(d3.axisRight(scale4legend).ticks(5));
         
     mapText.append("text")
         .attr("x", 70)
         .attr("y", range4legend.length / 2)
-        .style("fill", "white")
-        .attr("font-size", "11px")
-        .attr("font-family", "Helvetica Neue, sans-serif")
+        .style("color", "#DDDDDD")
+        .style("font-size", "16px")
+        .style("font-family", "Poppins")
+        .style("font-weight", "400")
         .text("Proportion of " + genre + " songs in 2022 Top 50")
-        // .call(wrap, 150); // Limite la largeur du texte à 200 pixels
 }
 
 function createCarac(classichit) {
 
     let vlSpec = {
         "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+        "background": "#222222",
+        "stroke": "#DDDDDD",
         "data": {"values": classichit},
         "transform": [
             {"fold": ctx.caracs_list},
@@ -397,7 +381,11 @@ function createCarac(classichit) {
                 "encoding": {"text": {"field":"key", "type": "nominal"}}
             }]
         }],
-        "config": {"view": {"stroke": null}}
+        "config": {
+            "view": {"stroke": null},
+            "axisX": {"labelColor": "#DDDDDD", "titleColor": "#DDDDDD"},
+            "axisY": {"labelColor": "#DDDDDD", "titleColor": "#DDDDDD"},
+        }
     };
 
     const vlOpts = {actions: false};
@@ -405,97 +393,63 @@ function createCarac(classichit) {
 }
 
 
-function changeGenre() {
+// Fonctions à effectuer après le chargement de la page
 
-    const genreItems = document.querySelectorAll('#genreSelect li');
-    genreItems.forEach(item => {
-        item.addEventListener('click', (event) => {
+document.addEventListener("DOMContentLoaded", function () {
+    const openChoose = document.querySelector('.openChoose');
+    const genreSelect = document.getElementById('genreSelect');
+    const closeBtn = document.querySelector('.close');
+    const genreItems = genreSelect.querySelectorAll('li');
 
-            const genreSelect = document.getElementById('genreSelect');
-            genreSelect.classList.remove('open');
+    const sections = document.querySelectorAll("section");
+    let currentSection = 0;
+    let isScrolling = false;
 
-            const selectedGenre = event.target.getAttribute('data-value');
-            console.log('Selected genre:', selectedGenre);
-            loadData(selectedGenre);
-        });
+    scrollTo({top:0, left: 0, behavior: 'smooth'});
+
+    // Fast scroll between sections
+    window.addEventListener("wheel", function (e) {
+        if (isScrolling) return;
+
+        if (e.deltaY > 0) {
+        // Scrolling down
+        if (currentSection < sections.length - 1) {
+            currentSection++;
+        }
+        } else {
+        // Scrolling up
+        if (currentSection > 0) {
+            currentSection--;
+        }
+        }
+
+        isScrolling = true;
+        sections[currentSection].scrollIntoView({ behavior: "smooth" });
+
+        setTimeout(() => { 
+        isScrolling = false;
+        }, 500); // Adjust timeout based on scroll duration
     });
-    // let genre = document.getElementById("genreSelect").value; 
-    // let genreSelect = document.getElementById("genreSelect");
-    // let selectedGenre = genreSelect.getAttribute("data-value");
-    // console.log(selectedGenre);
-    
-}
 
+    // Open the dropdown by adding the 'open' class
+    openChoose.addEventListener('click', () => {
+    genreSelect.classList.add('open');
+    });
 
+    // Close the dropdown when clicking "close"
+    closeBtn.addEventListener('click', () => {
+    genreSelect.classList.remove('open');
+    });
 
-
-
-
-
-
-
-
-// Fonction pour descendre d'une section (après appui sur la flèche):
-
-// function clic(prochain) {
-//     var arrows = document.querySelectorAll(".down");
-//     for (var i = 0; i <= arrows.length - 1; i++) {
-//       arrows[i].classList.add("clic");
-//     }
-//     setTimeout(down, 250, prochain);
-//   }
-
-// function up() {
-//     var top = document
-//       .querySelector("body")
-//       .getBoundingClientRect().top; /*distance jusqu'au de la page*/
-
-//     var haut = 0;
-//     var id = setInterval(frame, 10);
-
-//     function frame() {
-//       if (haut < top) {
-//         clearInterval(id);
-//       } else {
-//         haut += -10;
-//         window.scrollBy(0, -10);
-//       }
-//     }
-//     var arrowtop = document.querySelector(".updown.up");
-//     arrowtop.classList.remove("clic");
-//   }
-
-//   function down(prochain) {
-//     var distance = document.querySelector(prochain).getBoundingClientRect().top;
-//     var bas = 0;
-//     var n = Math.floor(distance / 10);
-
-//     var id1 = setInterval(frame1, 10);
-
-//     function frame1() {
-//       if (bas >= n * 10) {
-//         clearInterval(id1);
-//         var id2 = setInterval(frame2, 10);
-
-//         function frame2() {
-//           if (bas >= distance) {
-//             clearInterval(id2);
-//           } else {
-//             bas += 1;
-//             window.scrollBy(0, 1);
-//           }
-//         }
-//       } else {
-//         bas += 10;
-//         window.scrollBy(0, 10);
-//       }
-//     }
-//     setTimeout(addArrow, 500);
-//   }
-
-// function addArrow() {
-//     var arrows = document.querySelectorAll(".down");
-//     for (var i = 0; i <= arrows.length - 1; i++) {
-//       arrows[i].classList.remove("clic");
-//     }
-//   }
+    // Close the dropdown when clicking any list item
+    genreItems.forEach(item => {
+    item.addEventListener('click', () => {
+        scrollTo({top:0, left: 0, behavior: 'smooth'});
+        genreSelect.classList.remove('open');
+        const selectedGenre = event.target.getAttribute('data-value');
+        console.log('Selected genre:', selectedGenre);
+        ctx.currentGenre = selectedGenre;
+        loadData(selectedGenre);
+    });
+    });
+});

@@ -11,12 +11,13 @@ body {
     padding: 0px;
     font-family: 'Poppins', 'Helvetica Neue', sans-serif;
     font-weight: 400;
+    font-size: 16px;
+    color: #DDDDDD;
     background-color: #121212;
 }
 
 h1 {
-    color: white;
-    /* font-family: 'Helvetica Neue', sans-serif; */
+    color: #DDDDDD;
     font-size: 2em;
     font-weight: 700;
     margin: 0;
@@ -33,7 +34,7 @@ h1 {
     flex-direction: column;
 }
 
-#Worldmap {
+#Carac {
     background-color: #222222;
 }
 
@@ -68,23 +69,20 @@ svg {
     padding: 0px 20px;
 }
 
+#Menu a {
+    color: #DDDDDD;
+}
+
 #homeButton:hover {
     cursor: pointer;
 }
 
 .tick line{
-    stroke: white;
+    stroke: #DDDDDD;
 }
 
 .domain {
-    stroke: white;
-}
-
-text {
-    color: white;
-    /* stroke: white; */
-    font-family: "Helvetica Neue", sans-serif;
-    font-size: "11px";
+    stroke: #DDDDDD;
 }
 
 
@@ -99,7 +97,7 @@ text {
     right: 0;
     background-color: rgba(50, 50, 50, 0.9);
     padding: 40px 80px 40px 00px;
-    color: white;
+    color: #DDDDDD;
     transition-duration: 0.5s;
     transform: translateX(100%);
     z-index: 100;

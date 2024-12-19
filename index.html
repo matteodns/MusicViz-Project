@@ -31,16 +31,16 @@
                     <ul>
                         <li><a href="#Home">Home</a></li>
                         <li><a href="#Timeline">Timeline</a></li>
-                        <li><a href="#Worldmap">Worldmap</a></li>
                         <li><a href="#Carac">Characteristics</a></li>
+                        <li><a href="#Worldmap">Worldmap</a></li>
                     </ul>
                 </div>
-                <div class="openChoose">Choose the musical genre</div>
+                <div class="openChoose">Choose the musical genre</div> 
                 <!-- GENRE select menu -->
               </header>
               <div id="genreSelect">
                 <div class="close">&#10062</div>
-                <ul onclick="changeGenre()">
+                <ul>
                   <li data-value="All">All</li>
                   <li data-value="Alt. Rock">Alternative Rock</li>
                   <li data-value="Blues">Blues</li>
@@ -62,18 +62,6 @@
                   <li data-value="Today">Today</li>
                 </ul>
               </div>
-            <!-- <script>
-                function changeGenre() {
-                    const genreItems = document.querySelectorAll('#genreSelect li');
-                    genreItems.forEach(item => {
-                        item.addEventListener('click', (event) => {
-                            const selectedGenre = event.target.getAttribute('data-value');
-                            console.log('Selected genre:', selectedGenre);
-                            // You can add more code here to handle the selected genre
-                        });
-                    });
-                }
-            </script> -->
 
             <!-- section de page d'accueil ? A FAIRE A LA FIN
             <section id="main"></section> -->
@@ -85,16 +73,6 @@
                     <h1>Timeline</h1>
                 </div>
                 <div id="TimelineDiv"></div>
-                <a href="#Worldmap">SECTION SUIVANTE</a>
-            </section>
-
-            <!-- section Worldmap -->
-            <section id="Worldmap">
-                <!-- <div class="upButton" onclick=""></div> -->
-                <div id="WorldmapTitle">
-                    <h1>Worldmap</h1>
-                </div>
-                <div id="WorldmapDiv"></div>
                 <a href="#Carac">SECTION SUIVANTE</a>
             </section>
 
@@ -105,72 +83,20 @@
                     <h1>Characteristics</h1>
                 </div>
                 <div id="CaracDiv"></div>
+                <a href="#Worldmap">SECTION SUIVANTE</a>
             </section>
 
-            <!-- section supplémentaire ? -->
-            <!-- <section id="Duration"> -->
+            <!-- section Worldmap -->
+            <section id="Worldmap">
                 <!-- <div class="upButton" onclick=""></div> -->
-                <!-- <div id="DurationTitle"> -->
-                    <!-- <h1>Duration</h1> -->
-                <!-- </div> -->
-                <!-- <div id="DurationDiv"></div> -->
-                <!-- <div class="downButton" onclick="clic"></div> -->
-            <!-- </section> -->
+                <div id="WorldmapTitle">
+                    <h1>Worldmap</h1>
+                </div>
+                <div id="WorldmapDiv"></div>
+                
+            </section>
 
         </div>
-
-        <script>
-            const sections = document.querySelectorAll("section");
-            let currentSection = 0;
-            let isScrolling = false;
-
-            window.addEventListener("wheel", function (e) {
-                if (isScrolling) return;
-
-                if (e.deltaY > 0) {
-                // Scrolling down
-                if (currentSection < sections.length - 1) {
-                    currentSection++;
-                }
-                } else {
-                // Scrolling up
-                if (currentSection > 0) {
-                    currentSection--;
-                }
-                }
-
-                isScrolling = true;
-                sections[currentSection].scrollIntoView({ behavior: "smooth" });
-
-                setTimeout(() => {
-                isScrolling = false;
-                }, 500); // Adjust timeout based on scroll duration
-            });
-
-        </script>
-        <script>
-            const openChoose = document.querySelector('.openChoose');
-            const genreSelect = document.getElementById('genreSelect');
-            const closeBtn = document.querySelector('.close');
-            const genreItems = genreSelect.querySelectorAll('li');
-
-            // Open the dropdown by adding the 'open' class
-            openChoose.addEventListener('click', () => {
-            genreSelect.classList.add('open');
-            });
-
-            // Close the dropdown when clicking "close"
-            closeBtn.addEventListener('click', () => {
-            genreSelect.classList.remove('open');
-            });
-
-            // // Close the dropdown when clicking any list item
-            // genreItems.forEach(item => {
-            // item.addEventListener('click', () => {
-            //     genreSelect.classList.remove('open');
-            // });
-            // });
-        </script>
 
     </body>
 </html>
