@@ -1,106 +1,145 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>MusicViz Project</title>
-        <meta name="description" content="My Data-Vizualization project about music genres specificities">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link type="text/css" rel="stylesheet" href="css/stylesheet.css">
-        <script type="text/javascript" src="js/d3.v7.min.js" defer></script>
-        <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-        <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
-        <script type="text/javascript" src="js/script.js"></script>
-        <script src="https://unpkg.com/topojson@3"></script>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-    </head>
-    
-    <body onload="createViz()">
-        <div id="main">
 
-            <!-- header: bouton de retour à la page d'accueil et lookup field-->
-            <header id="header">
-                <!-- HOME button -->
-                <div id="Menu">
-                    <ul>
-                        <li id="homeButton"><a href="#Home"><img id="icon" src="images/icon.png"></a></li>
-                        <li><a href="#Timeline">Timeline</a></li>
-                        <li><a href="#Carac">Characteristics</a></li>
-                        <li><a href="#Worldmap">Worldmap</a></li>
-                    </ul>
-                </div>
-                <div class="openChoose">Choose the musical genre</div> 
-                <!-- GENRE select menu -->
-              </header>
-              <div id="genreSelect">
-                <div class="close">&#10062</div>
+<head>
+    <meta charset="utf-8">
+    <title>MusicViz Project</title>
+    <meta name="description" content="My Data-Vizualization project about music genres specificities">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link type="text/css" rel="stylesheet" href="css/stylesheet.css">
+    <script type="text/javascript" src="js/d3.v7.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.30.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.26.0"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@3.0.10/dist/esri-leaflet.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
+    <script src="https://unpkg.com/topojson@3"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body onload="createViz()">
+    <div id="main">
+
+        <!-- header: bouton de retour à la page d'accueil et lookup field-->
+        <header id="header">
+            <!-- HOME button -->
+            <div id="Menu">
                 <ul>
-                  <li data-value="All">All</li>
-                  <li data-value="Alt. Rock">Alternative Rock</li>
-                  <li data-value="Blues">Blues</li>
-                  <li data-value="Country">Country</li>
-                  <li data-value="Disco">Disco</li>
-                  <li data-value="EDM">EDM</li>
-                  <li data-value="Folk">Folk</li>
-                  <li data-value="Funk">Funk</li>
-                  <li data-value="Gospel">Gospel</li>
-                  <li data-value="Jazz">Jazz</li>
-                  <li data-value="Metal">Metal</li>
-                  <li data-value="Pop">Pop</li>
-                  <li data-value="Punk">Punk</li>
-                  <li data-value="R&B">R&B</li>
-                  <li data-value="Rap">Rap</li>
-                  <li data-value="Reggae">Reggae</li>
-                  <li data-value="Rock">Rock</li>
-                  <li data-value="SKA">SKA</li>
-                  <li data-value="Today">Today</li>
+                    <li id="homeButton"><a href="#Home"><img id="icon" src="images/icon_small.png"></a></li>
+                    <li><a href="#Timeline">Timeline</a></li>
+                    <li><a href="#Carac">Characteristics</a></li>
+                    <li><a href="#Worldmap">Worldmap</a></li>
                 </ul>
-              </div>
-
-            <!-- section de page d'accueil ? -->
-            <section id="Home">
-                <h1>Welcome to my Data-Visualization Project</h1>
-                <img id="icon" src="images/logo.png" style="width: 400px; height: auto;">
-                <p style="text-align: center;">This project aims to visualize the specificities of different music genres. Choose a music genre in the menu above, and navigate through my different visualizations. Enjoy!</p>
-            </section>
-
-            <!-- section Timeline -->
-            <section id="Timeline">
-                <!-- <div class="upButton" onclick=""></div> -->
-                <div id="TimelineTitle">
-                    <h1>Timeline</h1>
-                </div>
-                <div id="TimelineDiv"></div>
-                <a href="#Carac">SECTION SUIVANTE</a>
-            </section>
-
-            <!-- section Carac -->
-            <section id="Carac">
-                <!-- <div class="upButton" onclick=""></div> -->
-                <div id="CaracTitle">
-                    <h1>Characteristics</h1>
-                </div>
-                <div id="CaracDiv"></div>
-                <a href="#Worldmap">SECTION SUIVANTE</a>
-            </section>
-
-            <!-- section Worldmap -->
-            <section id="Worldmap">
-                <!-- <div class="upButton" onclick=""></div> -->
-                <div id="WorldmapTitle">
-                    <h1>Worldmap</h1>
-                </div>
-                <div id="WorldmapDiv"></div>
-                
-            </section>
-
+            </div>
+            <div id="currentGenre"></div>
+            <div class="openChoose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 16 16">
+                    <path d="M12 13c0 1.105-1.12 2-2.5 2S7 14.105 7 13s1.12-2 2.5-2 2.5.895 2.5 2" />
+                    <path fill-rule="evenodd" d="M12 3v10h-1V3z" />
+                    <path d="M11 2.82a1 1 0 0 1 .804-.98l3-.6A1 1 0 0 1 16 2.22V4l-5 1z" />
+                    <path fill-rule="evenodd"
+                        d="M0 11.5a.5.5 0 0 1 .5-.5H4a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5m0-4A.5.5 0 0 1 .5 7H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5m0-4A.5.5 0 0 1 .5 3H8a.5.5 0 0 1 0 1H.5a.5.5 0 0 1-.5-.5" />
+                </svg>
+                <span>Choose the musical genre</span>
+            </div>
+            <!-- GENRE select menu -->
+        </header>
+        <div id="genreSelect">
+            <div class="close">&#10062</div>
+            <ul>
+                <li data-value="All">All</li>
+                <li data-value="Alt. Rock">Alternative Rock</li>
+                <li data-value="Blues">Blues</li>
+                <li data-value="Country">Country</li>
+                <li data-value="Disco">Disco</li>
+                <li data-value="EDM">EDM</li>
+                <li data-value="Folk">Folk</li>
+                <li data-value="Funk">Funk</li>
+                <li data-value="Gospel">Gospel</li>
+                <li data-value="Jazz">Jazz</li>
+                <li data-value="Metal">Metal</li>
+                <li data-value="Pop">Pop</li>
+                <li data-value="Punk">Punk</li>
+                <li data-value="R&B">R&B</li>
+                <li data-value="Rap">Rap</li>
+                <li data-value="Reggae">Reggae</li>
+                <li data-value="Rock">Rock</li>
+                <li data-value="SKA">SKA</li>
+                <li data-value="Today">Today</li>
+            </ul>
         </div>
 
-    </body>
+        <!-- section de page d'accueil ? -->
+        <section id="Home">
+            <h1>Welcome to my Data-Visualization Project</h1>
+            <img id="icon" src="images/logo_transp.png" style="width: 400px; height: auto;">
+            <p style="text-align: center;">This project aims to visualize the specificities of different music genres.
+                Choose a music genre in the menu above, and navigate through my different visualizations. Enjoy!</p>
+            <a class="downbutton" href="#Timeline">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#1ed760"
+                    class="bi bi-arrow-down-square" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z" />
+                </svg>
+            </a>
+        </section>
+
+        <!-- section Timeline -->
+        <section id="Timeline">
+            <!-- <div class="upButton" onclick=""></div> -->
+            <div id="TimelineTitle">
+                <h1>Timeline</h1>
+            </div>
+            <div id="TimelineDiv"></div>
+            <a class="downbutton" href="#Carac">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#1ed760"
+                    class="bi bi-arrow-down-square" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z" />
+                </svg>
+            </a>
+        </section>
+
+        <!-- section Carac -->
+        <section id="Carac">
+            <!-- <div class="upButton" onclick=""></div> -->
+            <div id="CaracTitle">
+                <h1>Characteristics</h1>
+            </div>
+            <div id="CaracDiv"></div>
+            <a class="downbutton" href="#Worldmap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#1ed760"
+                    class="bi bi-arrow-down-square" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z" />
+                </svg>
+            </a>
+        </section>
+
+        <!-- section Worldmap -->
+        <section id="Worldmap">
+            <!-- <div class="upButton" onclick=""></div> -->
+            <div id="WorldmapTitle">
+                <h1>Worldmap</h1>
+            </div>
+            <div id="WorldmapDiv"></div>
+            <a class="downbutton upbutton" href="#Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#1ed760"
+                    class="bi bi-arrow-down-square" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z" />
+                </svg>
+            </a>
+
+        </section>
+
+    </div>
+
+</body>
+
 </html>

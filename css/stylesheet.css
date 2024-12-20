@@ -1,3 +1,10 @@
+root {
+    --default-principal: #1ED760;
+    --default-light: #DDDDDD;
+    --default-bg: #121212;
+    --default-bg2: #222222;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -17,7 +24,7 @@ body {
 }
 
 h1 {
-    color: #DDDDDD;
+    color: var(--default-light);
     font-size: 2em;
     font-weight: 700;
     margin: 0;
@@ -29,10 +36,11 @@ h1 {
 #Worldmap,
 #Carac {
     height: 100vh;
-    padding: 50px 10px 0px 10px;
+    padding: 50px 10px 20px 10px;
     display: flex;
     align-items: center;
     flex-direction: column;
+    justify-content: space-between;
 }
 
 #Home,
@@ -71,6 +79,14 @@ svg {
     padding: 0px 20px;
 }
 
+.downbutton:hover svg {
+    fill: #DDDDDD
+}
+
+.upbutton {
+    transform: rotate(180deg);
+}
+
 /*Header menu*/
 #Menu {
     top: 0;
@@ -86,12 +102,11 @@ svg {
 
 #Menu li {
     padding-top: 10px;
-    color: #DDDDDD;
+    color: #FFFFFF;
 }
 
 #Menu li#homeButton{
     padding-top: 0px;
-    color: #DDDDDD;
 }
 
 #icon {
@@ -109,7 +124,7 @@ svg {
 }
 
 #Menu a {
-    color: #DDDDDD;
+    color: #FFFFFF;
 }
 
 #Menu li:hover a {
@@ -126,9 +141,31 @@ svg {
 
 
 /*Genre select*/
+/*choose music*/
 .openChoose {
     cursor: pointer;
-}
+    border: 2px solid #121212;
+    border-radius: 20px;
+    padding: 1px 15px;
+    background-color: #121212;
+    color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  .openChoose:hover {
+    border-color: #ffffff;
+    background-color: #ffffff;
+    color: #121212;
+  }
+  .openChoose svg {
+    fill: #ffffff;
+  }
+  .openChoose:hover svg {
+    fill: #121212;
+  }
+
 #genreSelect {
     position: fixed;
     top: 40px;

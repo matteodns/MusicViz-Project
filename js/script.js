@@ -10,7 +10,7 @@ const ctx = {
     ],
     STRIP_H: 20,
     WINDOWIDTH: window.innerWidth-20,
-    WINDOWHEIGHT: window.innerHeight-50,
+    WINDOWHEIGHT: window.innerHeight-70,
 
     currentGenre: "All",
     // ATTRIB: '<a href="https://www.enseignement.polytechnique.fr/informatique/CSC_51052/">CSC_51052_EP</a> - <a href="https://www.adsbexchange.com/data-samples/">ADSBX sample data</a>, &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -245,7 +245,7 @@ function createWorldmap(geogenre, genre) {
             .attr("style", "max-width: 100%; height: auto;");
 
         let legendG = svgG.append("svg")
-            .attr("width", 0.25*ctx.WINDOWIDTH)
+            .attr("width", "70px")
             // .attr("height", 0.7*ctx.WINDOWHEIGHT);
 
         svgEl.append("path") // Sphere path
@@ -421,7 +421,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentSection = 0;
     let isScrolling = false;
 
-    // scrollTo({top:0, left: 0, behavior: 'smooth'});
+    const currentGenreCont = document.querySelector('.openChoose span');
+
     sections[0].scrollIntoView({ behavior: "smooth" });
 
     // Fast scroll between sections
@@ -461,12 +462,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Close the dropdown when clicking any list item
     genreItems.forEach(item => {
     item.addEventListener('click', () => {
-        // scrollTo({top:0, left: 0, behavior: 'smooth'});
         sections[0].scrollIntoView({ behavior: "smooth" });
         genreSelect.classList.remove('open');
         const selectedGenre = event.target.getAttribute('data-value');
         console.log('Selected genre:', selectedGenre);
         ctx.currentGenre = selectedGenre;
+        currentGenreCont.innerText = selectedGenre;
         loadData(selectedGenre);
     });
     });
