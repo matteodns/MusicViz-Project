@@ -141,6 +141,12 @@ function loadData(genre) {
         classichit = classichit.filter((d) => d.Year < parseYear("2024"));
         classichit = classichit.filter((d) => d.Genre !== "World");
 
+        classichit.map(d => {
+            if (d.Genre === "Today") {
+                d.Genre = "Pop";
+            }
+        });
+
         if (genre !== "All") {
             classichit = classichit.filter((d) => d.Genre === genre);
         }
@@ -337,7 +343,7 @@ function createCarac(classichit) {
         "transform": [
             {"fold": ctx.caracs_list},
             {"aggregate": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["Year", "key"]},
-            {"window": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["key"], "frame": [-10, +5]},
+            {"window": [{"op": "mean", "field": "value", "as": "value"}], "groupby": ["key"], "frame": [-5, 0]},
         ],
         "width": 0.7 * ctx.WINDOWIDTH,
         "height": 0.7 * ctx.WINDOWHEIGHT,
