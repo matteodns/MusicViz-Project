@@ -294,7 +294,7 @@ function createWorldmap(geogenre, genre) {
 
 // Utilisation de la fonction wrap dans createMapLegend
 function createMapLegend(legendG, mapText, color, domainExtent, genre) {
-    
+
     let range4legend = d3.range(domainExtent[0], domainExtent[1], (domainExtent[1]-domainExtent[0])/100).reverse();
     let scale4legend = d3.scaleLinear()
         .domain(domainExtent)
@@ -324,7 +324,7 @@ function createMapLegend(legendG, mapText, color, domainExtent, genre) {
         .style("font-size", "16px")
         .style("font-family", "Poppins")
         .style("font-weight", "400")
-        .text("Proportion of " + genre + " songs in 2022 Top 50")
+        .text("Genre: " + genre);
 }
 
 function createCarac(classichit) {
@@ -355,6 +355,9 @@ function createCarac(classichit) {
             "y": {
                 "field": "value",
                 "type": "quantitative",
+                "axis": {
+                    "title": null
+                }
             },
             "color": {
                 "condition": {

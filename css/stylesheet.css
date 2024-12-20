@@ -87,6 +87,18 @@ svg {
     transform: rotate(180deg);
 }
 
+.explanatorytext {
+    align-self: self-start;
+    font-size: 14px;
+    padding: 0px 40px 0px 40px;
+}
+
+.furtherexplanation {
+    align-self: self-start;
+    font-size: 12px;
+    padding: 0px 40px 0px 40px;
+}
+
 /*Header menu*/
 #Menu {
     top: 0;
