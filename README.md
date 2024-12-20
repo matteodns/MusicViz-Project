@@ -89,7 +89,7 @@ This project draws inspiration and resources from the following:
   - [World Choropleth Map by D3](https://observablehq.com/@d3/world-choropleth/2)  
   - [World Atlas by TopoJSON](https://github.com/topojson/world-atlas?tab=readme-ov-file)  
 
-- **Interactive Line Plot**;
+- **Interactive Line Plot**:
     - [Multi Series Line Chart with an Interactive Line Highlight](https://vega.github.io/vega-lite/examples/interactive_line_hover.html)
 
 - **Spotify Graphic Chart**:  
